@@ -4,6 +4,7 @@ class UserData {
   String apellido;
   int edad;
   String correo;
+  DateTime? BirthadayDate;
   DateTime? startDate;
   DateTime? dueDate;
   String priority;
@@ -17,6 +18,7 @@ class UserData {
     this.apellido,
     this.edad,
     this.correo,
+    this.BirthadayDate,
     this.startDate,
     this.dueDate,
     this.priority,

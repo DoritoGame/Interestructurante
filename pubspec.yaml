@@ -34,10 +34,12 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.17.0
-  shared_preferences: ^2.0.12
   path_provider: ^2.0.5
   sqflite: ^2.3.0
   http: ^0.13.6
+  shared_preferences: ^2.2.3
+  firebase_core: ^2.24.2
+  cloud_firestore:
 
 
 

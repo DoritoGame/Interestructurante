@@ -19,6 +19,7 @@ class _RegistrarPageState extends State<RegistrarPage> {
   final TextEditingController _correoController = TextEditingController();
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _dueDateController = TextEditingController();
+  final TextEditingController _BirthdayController = TextEditingController();
   String? _priority;
   String? _generocontroller;
   String? _pagocontroller;
@@ -57,6 +58,25 @@ class _RegistrarPageState extends State<RegistrarPage> {
           '${picked.year.toString()}';
       setState(() {
         _dueDateController.text = formattedDate;
+      });
+    }
+  }
+
+  Future<Null> _selectDate3(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1800),
+      lastDate: DateTime(2019),
+    );
+    if (picked != null) {
+      final formattedDate = '${picked.day.toString().padLeft(2, '0')}' +
+          '/' +
+          '${picked.month.toString().padLeft(2, '0')}' +
+          '/' +
+          '${picked.year.toString()}';
+      setState(() {
+        _BirthdayController.text = formattedDate;
       });
     }
   }
@@ -240,6 +260,25 @@ class _RegistrarPageState extends State<RegistrarPage> {
                     ),
                     SizedBox(height: 16.0),
                     TextFormField(
+                      controller: _BirthdayController,
+                      decoration: InputDecoration(
+                        labelText: 'Fecha de cumpleaños (dd/mm/aaaa)',
+                        border: OutlineInputBorder(),
+                        labelStyle: TextStyle(fontFamily: 'Times New Roman'),
+                      ),
+                      style: TextStyle(fontFamily: 'Times New Roman'),
+                      onTap: () {
+                        _selectDate3(context);
+                      },
+                      validator: (value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Datos Obligatorios';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 16.0),
+                    TextFormField(
                       controller: _startDateController,
                       decoration: InputDecoration(
                         labelText: 'Fecha de inicio (dd/mm/aaaa)',
@@ -343,10 +382,10 @@ class _RegistrarPageState extends State<RegistrarPage> {
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          DateTime? startdate;
-                          if (_startDateController.text.isNotEmpty) {
+                          DateTime? BirthadayDate;
+                          if (_BirthdayController.text.isNotEmpty) {
                             List<String> dateParts =
-                                _startDateController.text.split('/');
+                                _BirthdayController.text.split('/');
                             if (dateParts.length == 3) {
                               int? day = int.tryParse(dateParts[0]);
                               int? month = int.tryParse(dateParts[1]);
@@ -355,15 +394,15 @@ class _RegistrarPageState extends State<RegistrarPage> {
                               if (day != null &&
                                   month != null &&
                                   year != null) {
-                                startdate = DateTime(year, month, day);
+                                BirthadayDate = DateTime(year, month, day);
                               }
                             }
                           }
                           if (_formKey.currentState!.validate()) {
-                            DateTime? dueDate;
-                            if (_dueDateController.text.isNotEmpty) {
+                            DateTime? startdate;
+                            if (_startDateController.text.isNotEmpty) {
                               List<String> dateParts =
-                                  _dueDateController.text.split('/');
+                                  _startDateController.text.split('/');
                               if (dateParts.length == 3) {
                                 int? day = int.tryParse(dateParts[0]);
                                 int? month = int.tryParse(dateParts[1]);
@@ -372,24 +411,43 @@ class _RegistrarPageState extends State<RegistrarPage> {
                                 if (day != null &&
                                     month != null &&
                                     year != null) {
-                                  dueDate = DateTime(year, month, day);
+                                  startdate = DateTime(year, month, day);
                                 }
                               }
                             }
-                            final task = UserData(
-                              int.parse(_cedulaController.text),
-                              _nombreController.text,
-                              _apellidoController.text,
-                              int.parse(_edadController.text),
-                              _correoController.text,
-                              startdate,
-                              dueDate,
-                              _priority!,
-                              _generocontroller!,
-                              _pagocontroller!,
-                            );
+                            if (_formKey.currentState!.validate()) {
+                              DateTime? dueDate;
+                              if (_dueDateController.text.isNotEmpty) {
+                                List<String> dateParts =
+                                    _dueDateController.text.split('/');
+                                if (dateParts.length == 3) {
+                                  int? day = int.tryParse(dateParts[0]);
+                                  int? month = int.tryParse(dateParts[1]);
+                                  int? year = int.tryParse(dateParts[2]);
 
-                            Navigator.pop(context, task);
+                                  if (day != null &&
+                                      month != null &&
+                                      year != null) {
+                                    dueDate = DateTime(year, month, day);
+                                  }
+                                }
+                              }
+                              final task = UserData(
+                                int.parse(_cedulaController.text),
+                                _nombreController.text,
+                                _apellidoController.text,
+                                int.parse(_edadController.text),
+                                _correoController.text,
+                                BirthadayDate,
+                                startdate,
+                                dueDate,
+                                _priority!,
+                                _generocontroller!,
+                                _pagocontroller!,
+                              );
+
+                              Navigator.pop(context, task);
+                            }
                           }
                         }
                       },
