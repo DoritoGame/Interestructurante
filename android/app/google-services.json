@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "919246131095",
-    "project_id": "gimnaciomusculoso-f90e2",
-    "storage_bucket": "gimnaciomusculoso-f90e2.appspot.com"
+    "project_number": "649330494695",
+    "project_id": "gimnaciomusculoso-d94fe",
+    "storage_bucket": "gimnaciomusculoso-d94fe.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:919246131095:android:865c529c81a153737abed2",
+        "mobilesdk_app_id": "1:649330494695:android:109c684040f42006226642",
         "android_client_info": {
           "package_name": "com.example.gimnaciomusculoso"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCwd9i9HbIb5A1CxvMefBYmlHo3EIkuz-Y"
+          "current_key": "AIzaSyDszEsAlGWd-cUAzI6ZCL5wXNh6TnauCw4"
         }
       ],
       "services": {
