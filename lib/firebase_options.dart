@@ -53,10 +53,10 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCwd9i9HbIb5A1CxvMefBYmlHo3EIkuz-Y',
-    appId: '1:919246131095:android:865c529c81a153737abed2',
-    messagingSenderId: '919246131095',
-    projectId: 'gimnaciomusculoso-f90e2',
-    storageBucket: 'gimnaciomusculoso-f90e2.appspot.com',
+    apiKey: 'AIzaSyDszEsAlGWd-cUAzI6ZCL5wXNh6TnauCw4',
+    appId: '1:649330494695:android:109c684040f42006226642',
+    messagingSenderId: '649330494695',
+    projectId: 'gimnaciomusculoso-d94fe',
+    storageBucket: 'gimnaciomusculoso-d94fe.appspot.com',
   );
 }

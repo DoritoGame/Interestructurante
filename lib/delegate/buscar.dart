@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:gimnaciomusculoso/data/Userdata.dart';
 import 'package:gimnaciomusculoso/pages/editar.dart';
 
@@ -314,3 +314,4 @@ class BuscarPorCedula extends SearchDelegate<List<UserData>> {
             color: Color.fromARGB(255, 0, 0, 0)));
   }
 }
+*/

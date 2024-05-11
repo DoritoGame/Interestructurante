@@ -38,8 +38,12 @@ dependencies:
   sqflite: ^2.3.0
   http: ^0.13.6
   shared_preferences: ^2.2.3
-  firebase_core: ^2.24.2
+  firebase_core:
   cloud_firestore:
+  firebase_auth:
+  google_sign_in: ^6.1.6
+  local_auth: ^2.1.8
+  
 
 
 
