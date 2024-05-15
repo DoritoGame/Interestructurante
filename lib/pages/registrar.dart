@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:gimnaciomusculoso/data/Userdata.dart';
-import 'package:gimnaciomusculoso/data/FirebaseService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:gimnaciomusculoso/data/FirebaseService.dart';
+import 'package:gimnaciomusculoso/data/Userdata.dart';
 
 class RegistrarPage extends StatefulWidget {
   RegistrarPage({Key? key}) : super(key: key);
@@ -102,7 +102,7 @@ class _RegistrarPageState extends State<RegistrarPage> {
             icon: Icon(Icons.refresh),
           ),
         ],
-      ), 
+      ),
       backgroundColor: Color.fromARGB(255, 182, 182, 181),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -432,8 +432,8 @@ class _RegistrarPageState extends State<RegistrarPage> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color.fromARGB(255, 21, 73, 105),
-                    onPrimary: Color.fromARGB(255, 0, 0, 0),
+                    foregroundColor: Color.fromARGB(255, 0, 0, 0),
+                    backgroundColor: Color.fromARGB(255, 21, 73, 105),
                   ),
                   child: Text(
                     'Guardar Cliente',

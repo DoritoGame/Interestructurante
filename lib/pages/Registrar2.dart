@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/material.dart';
 
 class Registrar2 extends StatefulWidget {
   @override
@@ -13,9 +12,7 @@ class _Registrar2State extends State<Registrar2> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-  bool _showPassword =
-      false; // Variable para controlar si se muestra la contraseña o no
+  bool _showPassword = false;
 
   void _registrarCorreoContrasena(BuildContext context) async {
     try {
@@ -24,16 +21,39 @@ class _Registrar2State extends State<Registrar2> {
         email: _emailController.text,
         password: _passwordController.text,
       );
+
+      // Envío de correo electrónico de verificación
+      await userCredential.user!.sendEmailVerification();
+
       // Registro exitoso
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Registro exitoso'),
-            content: Text('¡Tu cuenta ha sido registrada exitosamente!'),
+            title: Text(
+              'Registro exitoso',
+              style: TextStyle(
+                fontFamily: 'Times New Roman',
+                color: Colors.white,
+              ),
+            ),
+            content: Text(
+              '¡Tu cuenta ha sido registrada exitosamente! Se ha enviado un correo electrónico de verificación.',
+              style: TextStyle(
+                fontFamily: 'Times New Roman',
+                color: Colors.white,
+              ),
+            ),
+            backgroundColor: const Color.fromARGB(255, 70, 70, 69),
             actions: <Widget>[
               TextButton(
-                child: Text('Aceptar'),
+                child: Text(
+                  'Aceptar',
+                  style: TextStyle(
+                    fontFamily: 'Times New Roman',
+                    color: Colors.white,
+                  ),
+                ),
                 onPressed: () {
                   Navigator.pop(context); // Cierra el cuadro de diálogo
                   Navigator.pop(
@@ -50,34 +70,20 @@ class _Registrar2State extends State<Registrar2> {
     }
   }
 
-  void _registrarConGoogle(BuildContext context) async {
-    try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser != null) {
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser.authentication;
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-        final UserCredential userCredential =
-            await _auth.signInWithCredential(credential);
-        // Registro con Google exitoso
-        print('Usuario registrado con Google: ${userCredential.user!.email}');
-        // Redirigir a la página principal u otra página si es necesario
-      }
-    } catch (e) {
-      print('Error al registrar con Google: $e');
-      // Manejo de errores, puedes mostrar un mensaje al usuario si el registro falla
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registro'),
+        title: Text(
+          'Registro',
+          style: TextStyle(
+            fontFamily: 'Times New Roman',
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: const Color.fromARGB(255, 70, 70, 69),
       ),
+      backgroundColor: const Color.fromARGB(255, 58, 59, 52),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -85,13 +91,27 @@ class _Registrar2State extends State<Registrar2> {
           children: <Widget>[
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Correo electrónico'),
+              decoration: InputDecoration(
+                labelText: 'Correo electrónico',
+                labelStyle: TextStyle(
+                  fontFamily: 'Times New Roman',
+                  color: Colors.white,
+                ),
+              ),
+              style: TextStyle(
+                fontFamily: 'Times New Roman',
+                color: Colors.white,
+              ),
             ),
             SizedBox(height: 10.0),
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(
                 labelText: 'Contraseña',
+                labelStyle: TextStyle(
+                  fontFamily: 'Times New Roman',
+                  color: Colors.white,
+                ),
                 suffixIcon: IconButton(
                   icon: Icon(
                       _showPassword ? Icons.visibility : Icons.visibility_off),
@@ -100,16 +120,25 @@ class _Registrar2State extends State<Registrar2> {
                       _showPassword = !_showPassword;
                     });
                   },
+                  color: Colors.white,
                 ),
               ),
               obscureText:
                   !_showPassword, // Oculta la contraseña si _showPassword es false
+              style: TextStyle(
+                fontFamily: 'Times New Roman',
+                color: Colors.white,
+              ),
             ),
             SizedBox(height: 10.0),
             TextField(
               controller: _confirmPasswordController,
               decoration: InputDecoration(
                 labelText: 'Confirmar contraseña',
+                labelStyle: TextStyle(
+                  fontFamily: 'Times New Roman',
+                  color: Colors.white,
+                ),
                 suffixIcon: IconButton(
                   icon: Icon(
                       _showPassword ? Icons.visibility : Icons.visibility_off),
@@ -118,10 +147,15 @@ class _Registrar2State extends State<Registrar2> {
                       _showPassword = !_showPassword;
                     });
                   },
+                  color: Colors.white,
                 ),
               ),
               obscureText:
                   !_showPassword, // Oculta la contraseña si _showPassword es false
+              style: TextStyle(
+                fontFamily: 'Times New Roman',
+                color: Colors.white,
+              ),
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
@@ -134,15 +168,16 @@ class _Registrar2State extends State<Registrar2> {
                   print('Las contraseñas no coinciden');
                 }
               },
-              child: Text('Registrarse con correo y contraseña'),
-            ),
-            SizedBox(height: 20.0),
-            OutlinedButton.icon(
-              onPressed: () {
-                _registrarConGoogle(context);
-              },
-              icon: Icon(Icons.g_translate),
-              label: Text('Registrarse con Google'),
+              child: Text(
+                'Registrarse con correo y contraseña',
+                style: TextStyle(
+                  fontFamily: 'Times New Roman',
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 21, 73, 105),
+              ),
             ),
           ],
         ),

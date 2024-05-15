@@ -1,10 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gimnaciomusculoso/data/FirebaseService.dart';
 import 'package:gimnaciomusculoso/data/Userdata.dart';
 import 'package:gimnaciomusculoso/delegate/buscar.dart';
-import 'package:gimnaciomusculoso/pages/editar.dart';
-import 'package:gimnaciomusculoso/data/firebaseservice.dart';
+import 'package:gimnaciomusculoso/main.dart';
 import 'package:gimnaciomusculoso/pages/registrar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TodoApp extends StatefulWidget {
   const TodoApp({Key? key}) : super(key: key);
@@ -19,10 +19,9 @@ class _TodoAppState extends State<TodoApp> {
   @override
   void initState() {
     super.initState();
-    _getDataFromFirestore(); // Obtener datos al cargar la página
+    _getDataFromFirestore();
   }
 
-  // Método para obtener datos de Firestore
   Future<void> _getDataFromFirestore() async {
     try {
       final userDataList = await FirebaseService.getAllUserData();
@@ -32,6 +31,124 @@ class _TodoAppState extends State<TodoApp> {
       });
     } catch (error) {
       print("Error retrieving data from Firestore: $error");
+    }
+  }
+
+  Future<void> _deleteUser(int index) async {
+    bool confirmarEliminacion = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        BuildContext dialogContext = context;
+        return AlertDialog(
+          title: const Text("Confirmar eliminación"),
+          content:
+              const Text("¿Está seguro de que desea eliminar este usuario?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(false);
+              },
+              child: Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(true);
+              },
+              child: Text("Eliminar"),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmarEliminacion ?? false) {
+      try {
+        await FirebaseService.deleteUserDataByCedula(tasks[index].cedula);
+
+        print("Usuario eliminado de Firestore");
+
+        setState(() {
+          tasks.removeAt(index);
+        });
+      } catch (error) {
+        print("Error al eliminar usuario de Firestore: $error");
+      }
+    }
+  }
+
+  Future<void> _showEmailDialog(String email) async {
+    String selectedNotification = 'Notification De Pago';
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enviar notificación a $email'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Correo electrónico: $email'),
+              DropdownButton<String>(
+                value: selectedNotification,
+                onChanged: (String? value) {
+                  setState(() {
+                    selectedNotification = value!;
+                  });
+                },
+                items: <String>[
+                  'Notification De Pago',
+                  'Notification De Ofertas Especiales',
+                  'Notification De Actualizacion De Horarios'
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: SizedBox(
+                      width: 200,
+                      child: Text(
+                        value,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  );
+                }).toList(),
+              )
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await _sendNotificationByEmail(email, selectedNotification);
+                Navigator.of(context).pop();
+              },
+              child: Text('Enviar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _sendNotificationByEmail(
+      String email, String notificationType) async {
+    try {
+      await FirebaseService.sendEmailNotification(email, notificationType);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Correo electrónico enviado con éxito'),
+        ),
+      );
+    } catch (e) {
+      print('Error sending email: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al enviar el correo electrónico'),
+        ),
+      );
     }
   }
 
@@ -49,23 +166,36 @@ class _TodoAppState extends State<TodoApp> {
         backgroundColor: const Color.fromARGB(255, 70, 70, 69),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh), // Icono de recarga
-            onPressed:
-                _getDataFromFirestore, // Llama al método para recargar la página
-          ),
-          /* IconButton(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.exit_to_app),
             onPressed: () {
-              showSearch(
-                context: context,
-                delegate: BuscarPorCedula(tasks: tasks),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyApp(),
+                ),
               );
             },
-          ),*/
+          ),
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BuscarPorCedula(tasks: tasks),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: _getDataFromFirestore,
+          ),
         ],
       ),
       backgroundColor: const Color.fromARGB(255, 58, 59, 52),
-      body: TaskList(tasks: tasks),
+      body: TaskList(
+          tasks: tasks, onDelete: _deleteUser, onEmailTap: _showEmailDialog),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -98,8 +228,11 @@ class _TodoAppState extends State<TodoApp> {
 
 class TaskList extends StatelessWidget {
   final List<UserData> tasks;
+  final Function(int) onDelete;
+  final Function(String) onEmailTap;
 
-  TaskList({required this.tasks});
+  TaskList(
+      {required this.tasks, required this.onDelete, required this.onEmailTap});
 
   @override
   Widget build(BuildContext context) {
@@ -251,7 +384,13 @@ class TaskList extends StatelessWidget {
                     color: Colors.purple,
                   ),
                   onPressed: () {
-                    // Handle delete action
+                    onDelete(index);
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.email),
+                  onPressed: () {
+                    onEmailTap(task.correo);
                   },
                 ),
               ],

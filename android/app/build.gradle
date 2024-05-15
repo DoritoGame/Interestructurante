@@ -1,10 +1,8 @@
 plugins {
-    id "com.android.application"
-    // START: FlutterFire Configuration
+    id 'com.android.application'
     id 'com.google.gms.google-services'
-    // END: FlutterFire Configuration
-    id "kotlin-android"
-    id "dev.flutter.flutter-gradle-plugin"
+    id 'kotlin-android'
+    id 'dev.flutter.flutter-gradle-plugin'
 }
 
 def localProperties = new Properties()
@@ -26,6 +24,7 @@ if (flutterVersionName == null) {
 }
 
 android {
+    compileSdkVersion 34
     namespace "com.example.gimnaciomusculoso"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
