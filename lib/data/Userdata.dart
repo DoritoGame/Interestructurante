@@ -29,6 +29,23 @@ class UserData {
     this.isComplete = false,
   });
 
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
+      json['cedula']as int,
+      json['nombre'],
+      json['apellido'],
+      json['edad'],
+      json['correo'],
+      json['BirthadayDate'] != null ? json['BirthadayDate'] : null,
+      json['startDate'] != null ? json['startDate'] : null,
+      json['dueDate'] != null ? json['dueDate'] : null,
+      json['priority'],
+      json['genero'],
+      json['pago'],
+      isComplete: json['isComplete'] ?? false,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'cedula': cedula,

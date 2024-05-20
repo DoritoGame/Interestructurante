@@ -4,6 +4,10 @@
         "source": "com.example.gimnaciomusculoso.app-main-24:/mipmap-xxxhdpi/ic_launcher.png"
     },
     {
+        "merged": "com.example.gimnaciomusculoso.app-merged_res-31:/drawable_launch_background.xml.flat",
+        "source": "com.example.gimnaciomusculoso.app-main-24:/drawable/launch_background.xml"
+    },
+    {
         "merged": "com.example.gimnaciomusculoso.app-merged_res-31:/mipmap-mdpi_ic_launcher.png.flat",
         "source": "com.example.gimnaciomusculoso.app-main-24:/mipmap-mdpi/ic_launcher.png"
     },

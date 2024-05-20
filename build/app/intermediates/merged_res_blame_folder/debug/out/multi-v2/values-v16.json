@@ -4,7 +4,7 @@
             "outputFile": "com.example.gimnaciomusculoso.app-mergeDebugResources-29:/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\DORIAN\\.gradle\\caches\\transforms-3\\828de194ca23b825405093b62b7f4d15\\transformed\\appcompat-1.2.0\\res\\values-v16\\values-v16.xml",
+                    "source": "C:\\Users\\DORIAN\\.gradle\\caches\\8.8-rc-1\\transforms\\7498503da83b91de6917b1ba97c3446a\\transformed\\appcompat-1.2.0\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\DORIAN\\.gradle\\caches\\transforms-3\\60e6b55c9e2ae8d7f1c6851ffb26fdf0\\transformed\\core-1.10.1\\res\\values-v16\\values-v16.xml",
+                    "source": "C:\\Users\\DORIAN\\.gradle\\caches\\8.8-rc-1\\transforms\\0069d6c4c66bad6099befa92c26d41fe\\transformed\\core-1.10.1\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

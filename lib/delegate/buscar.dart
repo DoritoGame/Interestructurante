@@ -1,26 +1,56 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gimnaciomusculoso/data/Userdata.dart';
 
-class BuscarPorCedula extends StatelessWidget {
-  final List<UserData> tasks;
-  final TextEditingController cedulaController = TextEditingController();
+class BuscarPage extends StatefulWidget {
+  @override
+  _BuscarPageState createState() => _BuscarPageState();
+}
 
-  BuscarPorCedula({required this.tasks});
+class _BuscarPageState extends State<BuscarPage> {
+  final TextEditingController _cedulaController = TextEditingController();
+  UserData? _userData;
 
-  void _buscarPorCedula(BuildContext context) {
-    String cedula = cedulaController.text;
-    UserData? usuarioEncontrado = tasks.firstWhere(
-        (task) => task.cedula == int.parse(cedula),
-        orElse: () => UserData(0, '', '', 0, '', null, null, null, '', '', '',
-            isComplete: false));
+  Future<void> _buscarUsuario() async {
+    final cedulaIngresada = int.tryParse(_cedulaController.text.trim());
 
-    if (usuarioEncontrado != null) {
-      // Aquí puedes hacer lo que quieras con el usuario encontrado,
-      // como mostrarlo en una lista o realizar alguna otra acción.
-      print('Usuario encontrado: $usuarioEncontrado');
-    } else {
-      // Si no se encuentra ningún usuario con la cédula ingresada, puedes mostrar un mensaje o realizar otra acción.
-      print('No se encontró ningún usuario con la cédula $cedula');
+    if (cedulaIngresada == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Por favor, ingresa un número de cédula válido'),
+        ),
+      );
+      return;
+    }
+
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('clientes')
+          .where('cedula', isEqualTo: cedulaIngresada)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final userData = UserData.fromJson(querySnapshot.docs.first.data());
+        setState(() {
+          _userData = userData;
+        });
+      } else {
+        setState(() {
+          _userData = null;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('No se encontró ningún usuario con esa cédula'),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error buscando usuario: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al buscar el usuario'),
+        ),
+      );
     }
   }
 
@@ -28,27 +58,87 @@ class BuscarPorCedula extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Buscar por Cédula'),
+        title: Text('Buscar Usuario'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             TextField(
-              controller: cedulaController,
-              keyboardType: TextInputType.number,
+              controller: _cedulaController,
               decoration: InputDecoration(
-                labelText: 'Ingrese la cédula',
+                labelText: 'Cédula',
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: () {
-                _buscarPorCedula(context);
-              },
+              onPressed: _buscarUsuario,
               child: Text('Buscar'),
             ),
+            SizedBox(height: 16.0),
+            if (_userData != null)
+              Expanded(
+                child: UserDataWidget(userData: _userData!),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UserDataWidget extends StatelessWidget {
+  final UserData userData;
+
+  UserDataWidget({required this.userData});
+
+  @override
+  Widget build(BuildContext context) {
+    String? formattedBirthdayDate;
+    String? formattedStartDate;
+    String? formattedDueDate;
+
+    if (userData.BirthadayDate != null) {
+      Timestamp birthdayDate = userData.BirthadayDate!;
+      formattedBirthdayDate =
+          "${birthdayDate.toDate().day.toString().padLeft(2, '0')}/${birthdayDate.toDate().month.toString().padLeft(2, '0')}/${birthdayDate.toDate().year.toString()}";
+    }
+
+    if (userData.startDate != null) {
+      Timestamp startDate = userData.startDate!;
+      formattedStartDate =
+          "${startDate.toDate().day.toString().padLeft(2, '0')}/${startDate.toDate().month.toString().padLeft(2, '0')}/${startDate.toDate().year.toString()}";
+    }
+
+    if (userData.dueDate != null) {
+      Timestamp dueDate = userData.dueDate!;
+      formattedDueDate =
+          "${dueDate.toDate().day.toString().padLeft(2, '0')}/${dueDate.toDate().month.toString().padLeft(2, '0')}/${dueDate.toDate().year.toString()}";
+    }
+
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '               ${userData.nombre}  ${userData.apellido}',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0,
+              ),
+            ),
+            SizedBox(height: 8.0),
+            Text('Cedula: ${userData.cedula}'),
+            Text('Edad: ${userData.edad}'),
+            Text('Fecha de Cumpleaños: $formattedBirthdayDate'),
+            Text('Correo: ${userData.correo}'),
+            Text('Genero: ${userData.genero}'),
+            Text('Membresia: ${userData.priority}'),
+            Text('Fecha de inicio: $formattedStartDate'),
+            Text('Fecha de fin: $formattedDueDate'),
+            Text('Tipo de pago: ${userData.pago}'),
           ],
         ),
       ),

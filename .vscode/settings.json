@@ -4,5 +4,7 @@
         "Buscar",
         "Cedula",
         "Piernas"
-    ]
+    ],
+    "java.import.gradle.java.home": "",
+    "java.compile.nullAnalysis.mode": "automatic"
 }

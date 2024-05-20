@@ -182,7 +182,7 @@ class _TodoAppState extends State<TodoApp> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BuscarPorCedula(tasks: tasks),
+                  builder: (context) => BuscarPage(),
                 ),
               );
             },
