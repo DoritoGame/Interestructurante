@@ -381,7 +381,7 @@ class TaskList extends StatelessWidget {
                 IconButton(
                   icon: Icon(
                     Icons.delete,
-                    color: Colors.purple,
+                    color: Colors.red,
                   ),
                   onPressed: () {
                     onDelete(index);
@@ -389,6 +389,7 @@ class TaskList extends StatelessWidget {
                 ),
                 IconButton(
                   icon: Icon(Icons.email),
+                  color: Colors.blue,
                   onPressed: () {
                     onEmailTap(task.correo);
                   },
